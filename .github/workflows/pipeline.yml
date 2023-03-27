@@ -37,9 +37,8 @@ jobs:
         if: ${{ (github.event_name == 'push') && (contains(join(fromJSON(env.COMMIT_MESSAGES)), '#skip') == false) }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "quiet-chamber-89830"
+          heroku_app_name: "whispering-chamber-99501"
           heroku_email: "hongjinnpark@gmail.com"
-          appdir: "server"
           # healthcheck: "https://notes-gha.herokuapp.com/health"
           # checkstring: "healthy"
           # rollbackonhealthcheckfailed: true
