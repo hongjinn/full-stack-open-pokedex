@@ -30,7 +30,7 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:5000
-      - name: akhileshns/heroku-deploy@v3.12.13 but will not run if it's not a push to main or if \#skip in the commit message
+      - name: akhileshns/heroku-deploy@v3.12.13 but will not run if it's not push to main or if \#skip in the commit message
         uses: akhileshns/heroku-deploy@v3.12.13
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
