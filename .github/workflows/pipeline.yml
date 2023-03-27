@@ -18,18 +18,18 @@ jobs:
           node-version: '16'
       - name: Install dependencies
         run: npm install
-      # - name: Check style
-      #   run: npm run eslint
+      - name: Check style
+        run: npm run eslint
       - name: Build steps into dist folder
         run: npm run build
-      # - name: Test with Jest
-      #   run: npm run test
-      # - name: e2e tests
-      #   uses: cypress-io/github-action@v5
-      #   with:
-      #     command: npm run test:e2e
-      #     start: npm run start-prod
-      #     wait-on: http://localhost:5000
+      - name: Test with Jest
+        run: npm run test
+      - name: e2e tests
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run test:e2e
+          start: npm run start-prod
+          wait-on: http://localhost:5000
       - name: akhileshns/heroku-deploy@v3.12.13 but will not run if it's not a push to main or if \#skip in the commit message
         uses: akhileshns/heroku-deploy@v3.12.13
         env:
@@ -39,6 +39,42 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "whispering-chamber-99501"
           heroku_email: "hongjinnpark@gmail.com"
-          # healthcheck: "https://notes-gha.herokuapp.com/health"
-          # checkstring: "healthy"
-          # rollbackonhealthcheckfailed: true
+          healthcheck: "https://notes-gha.herokuapp.com/health"
+          checkstring: "healthy"
+          rollbackonhealthcheckfailed: true
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: success()
+        with:
+          severity: info
+          details: Deployment Succeeded
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: failure()
+        with:
+          severity: error
+          details: Deployment Failed
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Cancelled
+        uses: rjstone/discord-webhook-notify@v1
+        if: cancelled()
+        with:
+          severity: warn
+          details: Deployment Cancelled
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag, will not run if \#skip in commit message
+        env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+        if: ${{ (github.event_name == 'push') && (contains(join(fromJSON(env.COMMIT_MESSAGES)), '#skip') == false) }}
+        uses: anothrNick/github-tag-action@1.61.0
