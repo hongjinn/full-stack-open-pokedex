@@ -39,9 +39,6 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "whispering-chamber-99501"
           heroku_email: "hongjinnpark@gmail.com"
-          healthcheck: "https://notes-gha.herokuapp.com/health"
-          checkstring: "healthy"
-          rollbackonhealthcheckfailed: true
       - name: Test Success
         uses: rjstone/discord-webhook-notify@v1
         if: success()
