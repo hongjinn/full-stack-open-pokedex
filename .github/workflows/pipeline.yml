@@ -70,6 +70,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
+      - name: Make sure your settings in GH is set to read and write
+        run: echo "Settings -> Actions (LHS) -> General -> Workflow permissions -> Read and write permissions"
       - name: Bump version and push tag, will not run if \#skip in commit message
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
