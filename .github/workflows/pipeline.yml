@@ -37,7 +37,7 @@ jobs:
         if: ${{ (github.event_name == 'push') && (contains(join(fromJSON(env.COMMIT_MESSAGES)), '#skip') == false) }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "pokedex-fso-hj42"
+          heroku_app_name: "pure-refuge-97699"
           heroku_email: "hongjinnpark@gmail.com"
           appdir: "server"
           # healthcheck: "https://notes-gha.herokuapp.com/health"
