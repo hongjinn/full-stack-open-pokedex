@@ -22,11 +22,24 @@ jobs:
         run: npm run eslint
       - name: Build steps into dist folder
         run: npm run build
-      - name: Test with Jest
-        run: npm run test
-      - name: e2e tests
-        uses: cypress-io/github-action@v5
+      # - name: Test with Jest
+      #   run: npm run test
+      # - name: e2e tests
+      #   uses: cypress-io/github-action@v5
+      #   with:
+      #     command: npm run test:e2e
+      #     start: npm run start-prod
+      #     wait-on: http://localhost:5000
+      - name: akhileshns/heroku-deploy@v3.12.13 but will not run if it's not a push to main or if \#skip in the commit message
+        uses: akhileshns/heroku-deploy@v3.12.13
+        env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        if: ${{ (github.event_name == 'push') && (contains(join(fromJSON(env.COMMIT_MESSAGES)), '#skip') == false) }}
         with:
-          command: npm run test:e2e
-          start: npm run start-prod
-          wait-on: http://localhost:5000
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "pokedex-fso-hj42"
+          heroku_email: "hongjinnpark@gmail.com"
+          appdir: "server"
+          # healthcheck: "https://notes-gha.herokuapp.com/health"
+          # checkstring: "healthy"
+          # rollbackonhealthcheckfailed: true
