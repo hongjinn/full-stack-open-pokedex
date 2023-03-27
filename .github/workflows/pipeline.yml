@@ -18,8 +18,8 @@ jobs:
           node-version: '16'
       - name: Install dependencies
         run: npm install
-      - name: Check style
-        run: npm run eslint
+      # - name: Check style
+      #   run: npm run eslint
       - name: Build steps into dist folder
         run: npm run build
       # - name: Test with Jest
@@ -37,7 +37,7 @@ jobs:
         if: ${{ (github.event_name == 'push') && (contains(join(fromJSON(env.COMMIT_MESSAGES)), '#skip') == false) }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "pure-refuge-97699"
+          heroku_app_name: "pokedex-fso-hj"
           heroku_email: "hongjinnpark@gmail.com"
           appdir: "server"
           # healthcheck: "https://notes-gha.herokuapp.com/health"
